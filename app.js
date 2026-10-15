@@ -55,7 +55,7 @@ function renderScene(){
  </div><div class="bouquet-layout"><div class="bouquet ambient">${picture('flowers','flower-art')}</div></div>
  <div class="bouquet-poem bouquet-poem-left"><p>roses are red,<br>the sky can be pink,<br>i love you so much<br>i forgot how to think.</p></div>
  <figure class="bouquet-photo"><img src="${assets.bouquetPhoto}" class="bouquet-portrait" alt="Melanie holding her plush toy" draggable="false"></figure>
- <div class="bouquet-poem bouquet-poem-right"><p>And I’ll meet you<br>in my dreams<br>somewhere only<br>the two of us know<br>in the meadow<br>beyond the stream<br>where the wild<br>roses grow</p><small>@iamroanpoetry</small></div>
+ <div class="bouquet-poem bouquet-poem-right"><p>And I’ll meet you<br>in my dreams<br>somewhere only<br>the two of us know<br>in the meadow<br>beyond the stream<br>where the wild<br>roses grow</p></div>
  <div class="bouquet-roses" aria-hidden="true">${[[8.5,13,14.8,-18,0],[25,62,9,-6,-5.1],[91.3,34,7.4,20,-2.7]].map(([x,y,size,tilt,delay])=>`<span class="bouquet-rose" style="left:${x}%;top:${y}%;width:${size}%;--rose-tilt:${tilt}deg;--rose-delay:${delay}s">${picture('redRose','rose-art ambient')}</span>`).join('')}</div>${words(scene)}`,
  balloons:()=>`${cloudLayer()}<div id="balloon-rise"><div class="balloon-drift ambient">${picture('balloons','balloon-art')}</div></div>${words(scene)}`,
  ours:()=>`${catFamilySpread(assets)}${words(scene)}`,
