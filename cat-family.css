@@ -1,0 +1,125 @@
+/* Only this spread changes. The room fits inside the existing book without
+   stretching any cat, including on the shorter phone-landscape pages. */
+.spread.ours {
+ --family-width: min(100cqw, 182.4635cqh);
+ --family-inset: calc((100cqw - var(--family-width)) / 2);
+ background: linear-gradient(#fad1b9 0 75%, #f7c1bc 75% 100%);
+}
+.ours .family-room {
+ position: absolute;
+ left: 50%;
+ top: 0;
+ width: var(--family-width);
+ height: 100%;
+ transform: translateX(-50%);
+ container-type: size;
+ pointer-events: none;
+}
+.ours .family-base,.ours .family-garland,.ours .family-basket,
+.ours .family-dialogue,.ours .family-connectors {
+ position: absolute;
+ inset: 0;
+ width: 100%;
+ height: 100%;
+ pointer-events: none;
+ overflow: visible;
+}
+.ours .family-art { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
+.ours .family-art-base { z-index: 1; }
+.ours .family-garland {
+ z-index: 2;
+ --tilt: 0deg;
+ transform-origin: 50% 0;
+ animation: paper-heart 4s ease-in-out infinite;
+ animation-delay: -.9s;
+}
+.ours .family-basket { z-index: 4; }
+.ours .family-basket-left,.ours .family-tail-minoucha {
+ animation: family-bob-left 8s ease-in-out infinite;
+}
+.ours .family-basket-middle,.ours .family-tail-mala {
+ animation: family-bob-middle 9.5s ease-in-out infinite;
+ animation-delay: -2.3s;
+}
+.ours .family-cat {
+ position: absolute;
+ display: block;
+ height: auto;
+ max-width: none;
+ object-fit: contain;
+ pointer-events: none;
+}
+.ours .family-siva { z-index: 5; }
+.ours .family-besbes { z-index: 6; }
+.ours .family-haze {
+ position: absolute;
+ left: 12%; top: 55%; width: 27%; height: 34%;
+ z-index: 3;
+ background: radial-gradient(ellipse at 36% 54%, #a7b46a30, #b4c18a16 50%, transparent 72%);
+ pointer-events: none;
+}
+.ours .family-caption {
+ position: absolute;
+ left: 1.9%; top: 51%; width: 17.5%; margin: 0;
+ z-index: 7;
+ text-align: center;
+ color: #65412f;
+ font: clamp(15px, 4.15cqh, 29px)/1.13 var(--hand);
+}
+.ours .family-caption span { display: block; }
+.ours .family-caption span+span { margin-top: .3em; }
+.ours .family-caption-arrow {
+ position: absolute;
+ left: 7.1%; top: 61.5%; width: 8.7%; height: 6.8%;
+ z-index: 7;
+ fill: none;
+ stroke: #65412f;
+ stroke-width: 2.5;
+ stroke-linecap: round;
+ stroke-linejoin: round;
+}
+.ours .family-dialogue { z-index: 9; opacity: 0; transition: opacity .25s; }
+.ours .family-dialogue.revealed { opacity: 1; }
+.ours .family-connectors { fill: #fff4df; stroke: #9a745f; stroke-width: 1.8; }
+.ours .family-speech {
+ position: absolute;
+ left: 41.65%; top: 48.23%; width: 23.75%; height: 13.15%;
+ display: grid;
+ place-items: center;
+ border: 1px solid #9a745f;
+ border-radius: clamp(13px, 3.1cqh, 24px);
+ background: linear-gradient(#fff4dfd9,#fff4dfd9), url('assets/cover-start-paper.png') center / cover;
+ box-shadow: 0 2px 4px #70452e18;
+ color: #63402d;
+ font: clamp(19px, 6.2cqh, 43px)/1 var(--hand);
+ white-space: nowrap;
+}
+/* Keep every original lyric, reveal cue, easing, ink colour and handwritten
+   font. Place the full sentence in two rows over the preview's lyric space. */
+.spread.ours > .lyric.paper-word {
+ top: 86.3% !important;
+ font-size: clamp(16px, 4.2cqh, 29px);
+ padding: .15em .28em;
+ border-radius: 8px;
+}
+.spread.ours > .lyric[data-at='65.36'] { left: calc(var(--family-inset) + var(--family-width) * .545) !important; }
+.spread.ours > .lyric[data-at='65.64'] { left: calc(var(--family-inset) + var(--family-width) * .60) !important; }
+.spread.ours > .lyric[data-at='65.8'] { left: calc(var(--family-inset) + var(--family-width) * .655) !important; }
+.spread.ours > .lyric[data-at='66.06'] { left: calc(var(--family-inset) + var(--family-width) * .775) !important; }
+.spread.ours > .lyric[data-at='66.4'] { left: calc(var(--family-inset) + var(--family-width) * .88) !important; font-size: clamp(16px, 4.2cqh, 29px); }
+.spread.ours > .lyric[data-at='65.64'],.spread.ours > .lyric[data-at='65.8'],
+.spread.ours > .lyric[data-at='66.06'],.spread.ours > .lyric[data-at='66.4'] { text-transform: uppercase; }
+.spread.ours > .lyric[data-at='66.9'],.spread.ours > .lyric[data-at='67.12'],
+.spread.ours > .lyric[data-at='67.26'],.spread.ours > .lyric[data-at='67.58'],
+.spread.ours > .lyric[data-at='67.88'],.spread.ours > .lyric[data-at='68.16'] {
+ top: 93% !important;
+ font-size: clamp(14px, 3.4cqh, 24px);
+}
+.spread.ours > .lyric[data-at='66.9'] { left: calc(var(--family-inset) + var(--family-width) * .60) !important; }
+.spread.ours > .lyric[data-at='67.12'] { left: calc(var(--family-inset) + var(--family-width) * .66) !important; }
+.spread.ours > .lyric[data-at='67.26'] { left: calc(var(--family-inset) + var(--family-width) * .72) !important; }
+.spread.ours > .lyric[data-at='67.58'] { left: calc(var(--family-inset) + var(--family-width) * .815) !important; }
+.spread.ours > .lyric[data-at='67.88'] { left: calc(var(--family-inset) + var(--family-width) * .87) !important; }
+.spread.ours > .lyric[data-at='68.16'] { left: calc(var(--family-inset) + var(--family-width) * .915) !important; }
+@keyframes family-bob-left { 50% { transform: translateY(-.65cqh); } }
+@keyframes family-bob-middle { 50% { transform: translateY(-.5cqh); } }

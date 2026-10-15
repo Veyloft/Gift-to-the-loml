@@ -1,0 +1,65 @@
+/* Mirror the existing paper width only to measure its outside purple margins.
+   No reading-area dimensions, padding or typography are changed. */
+#ending.letter-ending {
+ --letter-decor-paper: min(720px, calc(100vw - 2 * clamp(18px, 15vw, 220px)));
+ --letter-decor-side: calc((100vw - var(--letter-decor-paper)) / 2);
+}
+.letter-ending .letter-family { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.letter-ending .letter-family-cat {
+ position: absolute;
+ display: block;
+ width: calc(var(--letter-cat-space) * var(--letter-cat-ratio, 1));
+ height: auto;
+ max-width: none;
+ transform: none;
+ pointer-events: none;
+ animation: cat-sway 6s ease-in-out infinite;
+}
+.letter-ending .letter-family-left {
+ --letter-cat-safe: max(6px, env(safe-area-inset-left, 0px));
+ --letter-cat-space: max(28px, min(200px, calc(var(--letter-decor-side) - var(--letter-cat-safe) - 8px)));
+ left: calc(var(--letter-cat-safe) + (var(--letter-decor-side) - var(--letter-cat-safe) - 6px - var(--letter-cat-space) * var(--letter-cat-ratio, 1)) / 2);
+}
+.letter-ending .letter-family-right {
+ --letter-cat-safe: max(6px, env(safe-area-inset-right, 0px));
+ --letter-cat-space: max(28px, min(200px, calc(var(--letter-decor-side) - var(--letter-cat-safe) - 8px)));
+ right: calc(var(--letter-cat-safe) + (var(--letter-decor-side) - var(--letter-cat-safe) - 6px - var(--letter-cat-space) * var(--letter-cat-ratio, 1)) / 2);
+}
+.letter-ending .letter-family-minoucha { --letter-cat-ratio: .90; top: 12%; }
+.letter-ending .letter-family-mala { top: 18%; animation-delay: -3s; }
+.letter-ending .letter-family-besbes { --letter-cat-ratio: .96; bottom: clamp(110px, 19vh, 155px); animation-delay: -1.4s; }
+.letter-ending .letter-family-siva { --letter-cat-ratio: .93; bottom: clamp(125px, 13vh, 145px); animation-delay: -4.5s; }
+/* Reserve the left margin while the unchanged, brief Pusheen aside plays. */
+.letter-ending:has(.pusheen-aside) .letter-family-left { visibility: hidden; }
+.letter-unfolding .letter-family { opacity: var(--unfold, 0); }
+
+/* This wrapper has exactly the text's normal block metrics. Its static pattern
+   is as tall as the complete letter, so it continues through every scroll. */
+.letter-ending .letter-paper-content { position: relative; isolation: isolate; }
+.letter-ending .letter-pawprints {
+ position: absolute;
+ inset: 0;
+ z-index: -1;
+ opacity: .04;
+ pointer-events: none;
+ background-repeat: repeat;
+ background-size: 560px 740px;
+ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='560' height='740' viewBox='0 0 560 740'%3E%3Cdefs%3E%3Cg id='p' fill='%239b6985'%3E%3Cellipse cx='7' cy='13' rx='4.2' ry='5.5' transform='rotate(-22 7 13)'/%3E%3Cellipse cx='17' cy='6' rx='4.3' ry='5.7' transform='rotate(-7 17 6)'/%3E%3Cellipse cx='28' cy='6' rx='4.3' ry='5.7' transform='rotate(7 28 6)'/%3E%3Cellipse cx='38' cy='13' rx='4.2' ry='5.5' transform='rotate(22 38 13)'/%3E%3Cpath d='M12 34C5 29 12 22 16 19Q22 14 28 19C33 22 40 29 33 34Q29 37 23 33Q17 37 12 34Z'/%3E%3C/g%3E%3C/defs%3E%3Cuse href='%23p' transform='translate(51 87) rotate(-14) scale(.64)'/%3E%3Cuse href='%23p' transform='translate(381 199) rotate(17) scale(.92)'/%3E%3Cuse href='%23p' transform='translate(175 418) rotate(-24) scale(.76)'/%3E%3Cuse href='%23p' transform='translate(443 601) rotate(9) scale(.59)'/%3E%3C/svg%3E");
+}
+@media (max-width: 700px) {
+ #ending.letter-ending { --letter-decor-paper: calc(100vw - 40px); }
+}
+@media (max-height: 450px) and (orientation: landscape) {
+ #ending.letter-ending { --letter-decor-paper: min(720px, calc(100vw - 220px)); }
+ .letter-ending .letter-family-minoucha { top: 10%; }
+ .letter-ending .letter-family-mala { top: 16%; }
+ .letter-ending .letter-family-besbes { bottom: 106px; }
+ .letter-ending .letter-family-siva { bottom: 90px; }
+}
+@media (max-width: 700px) and (orientation: portrait) {
+ .letter-ending .letter-family-cat { width: 48px; top: auto; bottom: 80px; }
+ .letter-ending .letter-family-minoucha { left: max(6px, env(safe-area-inset-left, 0px)); }
+ .letter-ending .letter-family-besbes { left: max(58px, calc(env(safe-area-inset-left, 0px) + 52px)); }
+ .letter-ending .letter-family-mala { right: max(6px, env(safe-area-inset-right, 0px)); }
+ .letter-ending .letter-family-siva { right: max(58px, calc(env(safe-area-inset-right, 0px) + 52px)); }
+}

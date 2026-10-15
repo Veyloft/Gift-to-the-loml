@@ -1,0 +1,5 @@
+/* Separate accents leave the original bouquet container and sway untouched. */
+.flowers .bouquet-roses{position:absolute;inset:0;pointer-events:none}
+.flowers .bouquet-rose{position:absolute;display:block;transform:rotate(var(--rose-tilt));filter:drop-shadow(2px 4px 2px #823b5540)}
+.flowers .rose-art{display:block;width:100%;height:auto;object-fit:contain;transform-origin:50% 88%;animation:rose-accent-sway 8.5s ease-in-out infinite;animation-delay:var(--rose-delay)}
+@keyframes rose-accent-sway{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}

@@ -1,0 +1,55 @@
+/* Only the lyric papers pictured in the approved reference screenshots.
+   Nine-slicing the existing welcome paper preserves its worn corners and
+   folded edge on narrow words as well as the larger blue mechanism cards.
+   The backing has no effect on text metrics, anchors, or lyric transforms. */
+.blue #blue-card > .paper-word,
+.blue #blue-card > .blue-okay,
+.spread.spiral > .lyric.paper-word,
+.spread.flowers > .lyric.paper-word,
+.spread.balloons > .lyric.paper-word,
+.spread.ours > .lyric.paper-word {
+  --lyric-paper-rim: clamp(3px, .18em, 7px);
+  isolation: isolate;
+  background: transparent;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.blue #blue-card > .paper-word,
+.blue #blue-card > .blue-okay {
+  --lyric-paper-rim: clamp(5px, .35em, 12px);
+}
+
+.blue #blue-card > .paper-word::before,
+.blue #blue-card > .blue-okay::before,
+.spread.spiral > .lyric.paper-word::before,
+.spread.flowers > .lyric.paper-word::before,
+.spread.balloons > .lyric.paper-word::before,
+.spread.ours > .lyric.paper-word::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border: var(--lyric-paper-rim) solid transparent;
+  border-image-source: url('assets/cover-start-paper.png');
+  border-image-slice: 24 fill;
+  border-image-width: var(--lyric-paper-rim);
+  border-image-repeat: stretch;
+}
+
+/* A tiny fixed contact shadow; no live blur, filter, or animated grain. */
+.blue #blue-card > .paper-word::after,
+.blue #blue-card > .blue-okay::after,
+.spread.spiral > .lyric.paper-word::after,
+.spread.flowers > .lyric.paper-word::after,
+.spread.balloons > .lyric.paper-word::after,
+.spread.ours > .lyric.paper-word::after {
+  content: '';
+  position: absolute;
+  inset: 1.5px -1px -2px 1px;
+  z-index: -2;
+  pointer-events: none;
+  background: linear-gradient(135deg, #4c343012, #4c343037);
+  clip-path: polygon(4% 0, 96% 0, 100% 7%, 100% 88%, 97% 100%, 5% 100%, 0 89%, 0 10%);
+}

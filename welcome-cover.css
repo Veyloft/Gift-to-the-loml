@@ -1,0 +1,65 @@
+/* Physical cover, with the supplied illustrations retained as separate assets. */
+#welcome{--cover-height:min(60dvh,600px,74vw);width:100%;height:100%;display:grid;place-items:center;gap:0;isolation:isolate}
+#welcome:before{content:'';position:absolute;inset:0;z-index:-1;background:url('assets/cover-plum-texture.jpg') center/cover;opacity:.22;pointer-events:none}
+.welcome-layout{display:flex;align-items:center;flex-direction:column;gap:0;position:relative;padding-top:20px;transform:translateX(calc(var(--cover-height)*.045))}
+.welcome-art{width:calc(var(--cover-height)*.76);height:var(--cover-height);position:relative;margin-bottom:calc(var(--cover-height)*.11 + 10px)}
+.closed-book{display:block;position:absolute;inset:0;width:100%;height:100%;transform:rotate(-6deg);border:0;background:none;border-radius:0;box-shadow:13px 21px 23px #200d235c;container-type:size}
+.closed-book:before{display:none}
+.closed-pages{position:absolute;inset:1.1% -2.1% -2.4% 9%;border-radius:4px 10px 11px 3px;background:#f4e3bd;box-shadow:inset -3px 0 4px #9e796463,0 2px 0 #b69b80,0 5px 0 #f0dfb8,0 7px 0 #b9987a,0 10px 0 #efddb8,0 12px 0 #b96d83;overflow:hidden}
+.closed-pages:after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,#f4e8c9 0 2px,#b69b7c 2px 3px,#fff0d0 3px 5px);opacity:.65}
+.cover-binding{position:absolute;left:0;top:.2%;bottom:-2%;width:9%;border-radius:13px 1px 2px 14px;background:#75404c url('assets/cover-berry-spine.jpg') center/100% 100%;box-shadow:inset 4px 0 6px #36172e80,inset -2px 0 3px #2c152944;z-index:3}
+.cover-ribbon{position:absolute;left:15%;top:97%;height:14%;width:5.2%;background:#985867 url('assets/cover-berry-spine.jpg') center/100% auto;clip-path:polygon(0 0,100% 0,100% 100%,50% 93%,0 100%);box-shadow:inset 2px 0 #d2929166;z-index:-1}
+.cover-board{position:absolute;left:8%;top:0;width:92%;height:100%;border:1px solid #d995a3;border-radius:2px 12px 14px 3px;background:#d7929c url('assets/cover-paper-texture.jpg') center/100% 100%;box-shadow:inset 2px 1px 2px #f3c6bfab,inset -3px -3px 4px #a864754d,1px 3px 2px #6c34494a;container-type:size}
+.cover-board:before{content:'';position:absolute;inset:1% 1.2%;border:1px solid #e9b4ad65;border-radius:2px 10px 11px 2px;pointer-events:none}
+.cover-board>img,.opening-cover-art>img{position:absolute;object-fit:fill}
+.cover-moon{left:7.21%;top:7.25%;width:26.12%;height:13.95%}
+.cover-balloons{left:72.28%;top:4.91%;width:22.6%;height:25.34%}
+.cover-board>.cover-cats,.opening-cover-art>.cover-cats{left:18%;top:75.5%;width:64%;height:25%;object-fit:contain}
+.cover-album{position:absolute;left:18%;top:26%;width:64%;aspect-ratio:1;transform:rotate(.2deg);padding:.4%;background:#efd0c0;border:1px solid #e7bdae;box-shadow:1px 3px 3px #7844534a}
+.cover-album img{display:block;width:100%;height:100%;object-fit:contain}
+.cover-dedication{position:absolute;left:9%;right:6%;top:70.6%;margin:0;color:#61273e;white-space:nowrap;text-align:center;font:400 clamp(14px,6.8cqw,27px)/1.1 var(--hand);letter-spacing:.015em}
+.cover-board>.cover-bow,.opening-cover-art>.cover-bow{left:81%;top:-9.4%;width:35%;height:auto;object-fit:contain;z-index:4;filter:drop-shadow(1px 2px 1px #622e4538)}
+/* Reuse only the original ribbon tail, tucked beneath the unchanged knot. */
+.cover-board>.cover-bow-tail,.opening-cover-art>.cover-bow-tail{left:81%;top:-9.4%;width:35%;height:auto;object-fit:contain;z-index:3;clip-path:polygon(53% 31%,69% 38%,95% 100%,62% 100%,53% 53%);transform-origin:56% 29%;transform:rotate(18deg) scale(.88);filter:brightness(.96) drop-shadow(1px 2px 1px #622e4530)}
+.welcome-sticky{position:absolute;right:calc(100% + var(--cover-height)*.09);top:64%;width:max(75px,calc(var(--cover-height)*.23));aspect-ratio:.97;transform:rotate(-10deg);border:1px solid #f3c1ca;border-radius:1px 2px 17px 2px;background:linear-gradient(135deg,#f8cbd0,#f4bfc8 80%,#e9a4b4);color:#65243e;box-shadow:3px 9px 13px #28102952;font:400 clamp(20px,calc(var(--cover-height)*.047),34px)/1.03 var(--hand);padding:12px 6px;touch-action:manipulation}
+.welcome-sticky span{position:relative;z-index:1;display:block}
+.welcome-sticky:before{content:'';position:absolute;inset:0;background:url('assets/cover-paper-texture.jpg') center/230px;opacity:.1;pointer-events:none}
+.welcome-sticky:after{content:'';position:absolute;right:-1px;bottom:-1px;width:27%;height:25%;border-radius:70% 5% 65% 0;background:linear-gradient(135deg,#df95a6,#ffe1e5 70%);box-shadow:-2px -2px 3px #ba7b9025;pointer-events:none}
+.welcome-sticky .sticky-heart{font-size:.95em;margin-top:.12em}
+.welcome-sticky:active{translate:0 2px}
+.welcome-sticky:focus-visible{outline:3px solid #ffe9dc;outline-offset:5px}
+.welcome-start{position:relative;width:max(235px,calc(var(--cover-height)*.66));height:max(52px,calc(var(--cover-height)*.20));display:grid;place-items:center}
+#start{position:relative;z-index:1;width:100%;height:100%;border:0;border-radius:0;box-shadow:0 10px 17px #28132c25;background:transparent url('assets/cover-start-paper.png') center/100% 100% no-repeat;color:#61233c;padding:4% 5%;font:500 clamp(29px,calc(var(--cover-height)*.072),46px)/1 var(--hand);white-space:nowrap;touch-action:manipulation}
+#start:disabled{opacity:.7}
+.start-arrow{position:absolute;width:18%;left:-22%;top:-14%;height:95%;object-fit:contain;pointer-events:none}
+#load-note{margin:16px 0 0;color:#f6dfd4;font:400 clamp(17px,calc(var(--cover-height)*.035),24px)/1.2 var(--hand);text-align:center}
+/* The same front-cover DOM is carried by the existing two-faced opening board. */
+.opening-front.cover-board{inset:0;width:100%;height:100%;overflow:visible;display:block;transform:translateZ(calc(var(--board-depth) / 2));border-radius:2px 12px 14px 3px}
+.opening-front.cover-board:before{inset:1% 1.2%}
+.opening-cover-art{position:absolute;left:0;top:0;transform-origin:0 0;container-type:size}
+.opening-binding{position:absolute;top:0;left:calc(50% - var(--opening-binding-width));width:var(--opening-binding-width);height:100%;background:#75404c url('assets/cover-berry-spine.jpg') center/100% 100%;border-radius:8px 0 0 8px;box-shadow:inset -2px 0 3px #2c152944;pointer-events:none;transform-origin:right center}
+.opening-settled .opening-binding{display:none}
+.opening-face-light{border-radius:2px 12px 14px 3px}
+#reading.welcome-reading{padding:24px clamp(18px,7vw,90px);z-index:90;touch-action:manipulation;backdrop-filter:none;background:#422334cf}
+.welcome-reading .reading-sheet{width:100%;max-width:800px;max-height:min(84dvh,680px);background:#f9d5df;box-shadow:0 12px 50px #230e314d;position:relative;isolation:isolate;border:1px solid #f8baca}
+.welcome-reading .reading-sheet:before{content:'';position:absolute;inset:0;border-radius:inherit;background:url('assets/cover-paper-texture.jpg') center/550px;opacity:.07;pointer-events:none;z-index:-1}
+.welcome-reading .large-prose{font:400 clamp(24px,3.4vw,34px)/1.48 var(--hand);color:#623d4d;white-space:pre-wrap;overflow-wrap:break-word;user-select:text;-webkit-user-select:text;touch-action:pan-y}
+.welcome-reading .reading-close{color:#8f4665}
+@media(max-height:450px) and (orientation:landscape){
+ #welcome{--cover-height:min(55dvh,235px,43vw)}
+ .welcome-layout{padding-top:9px;transform:translateX(calc(var(--cover-height)*.045))}
+ .welcome-art{margin-bottom:calc(var(--cover-height)*.10 + 8px)}
+ .welcome-sticky{width:max(75px,calc(var(--cover-height)*.26));font-size:20px;top:60%;right:calc(100% + 16px);padding:8px 4px}
+ .welcome-start{width:220px;height:48px}
+ #start{font-size:29px;padding:6px 16px}
+ #load-note{margin-top:10px;font-size:17px}
+ #reading.welcome-reading{padding:14px 36px}
+ .welcome-reading .reading-sheet{max-height:calc(100dvh - 28px);padding:14px 22px}
+ .welcome-reading .large-prose{font-size:24px;line-height:1.4}
+}
+@media(max-width:500px) and (orientation:landscape){
+ #welcome{--cover-height:min(53dvh,200px,43vw)}
+ .welcome-layout{transform:translateX(23px)}
+ .welcome-sticky{right:calc(100% + 8px);width:70px;font-size:20px}
+ .welcome-start{width:200px}
+}

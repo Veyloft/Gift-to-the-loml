@@ -1,0 +1,4 @@
+@font-face{font-family:'Lilita One';src:url('assets/lilita-one.ttf') format('truetype');font-weight:400;font-style:normal;font-display:block}
+.finale .repeat-bubble{position:absolute;left:50%;top:50%;display:block;width:max-content;white-space:nowrap;pointer-events:none;opacity:var(--repeat-opacity,0);font-family:'Lilita One',sans-serif;font-weight:400;font-size:inherit;line-height:1.05;letter-spacing:.015em;color:#fff;-webkit-text-stroke:1.3px var(--word-color);paint-order:stroke fill;text-shadow:0 0 var(--word-blur,12px) var(--word-color),1px 2px 0 #edd7f2;transform:translate(-50%,-50%) scale(var(--word-scale,1));transform-origin:center}
+.finale .lyric.sung-again{text-shadow:0 0 var(--repeat-glow,12px) var(--word-color),1px 2px 0 #edd7f2}
+.finale .lyric.sung-again>b{opacity:calc(1 - var(--repeat-opacity,0))}

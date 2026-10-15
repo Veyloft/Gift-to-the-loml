@@ -1,0 +1,2 @@
+.balloons .cloud-flow{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;contain:paint}
+.balloons .sky-cloud{position:absolute;left:0;top:0;background-image:url('assets/cloud-atlas.png');background-size:300% 200%;background-repeat:no-repeat;will-change:transform;pointer-events:none}

@@ -1,0 +1,11 @@
+/* Outside the book, with no pointer target or animation. */
+.book.page-flip-ready{touch-action:pan-y pinch-zoom}
+.page-edge-cue{position:fixed;z-index:32;pointer-events:none;transform:translateY(-50%);text-align:center;color:#f5cddc;opacity:.65;font:18px/1.15 var(--hand);overflow-wrap:normal}
+.page-edge-cue>i{display:block;font-style:normal;font-size:17px;line-height:1.15}
+.narrow-edge-cue{font-size:min(16px,var(--cue-room));line-height:1}
+.narrow-edge-cue>i{font-size:inherit}
+.narrow-edge-cue>span{writing-mode:vertical-rl;white-space:nowrap}
+.page-edge-access{position:absolute;width:clamp(56px,9%,88px);height:100%;right:0;top:0;overflow:hidden;pointer-events:none}
+.page-edge-access:focus-visible{outline:2px solid #fff2d8;outline-offset:-2px}
+/* Fit the longer wording inside the same attached bookmark handle. */
+.love .love-tab span{font-size:clamp(16px,calc((clamp(112px,12cqw,144px) - 20px)*.18),22px)}

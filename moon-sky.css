@@ -1,0 +1,14 @@
+/* Sky-only decorations. All original night, moon and foreground rules stay
+   in their existing stylesheets. Static vectors use only opacity/transform. */
+.moon .star-field { pointer-events: none; }
+.moon .moon-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.moon .moon-sky * { pointer-events: none; }
+.moon .zodiac-constellation { position: absolute; width: 23%; height: 38%; overflow: visible; }
+.moon .zodiac-gemini { left: 4.5%; top: 9.5%; }
+.moon .zodiac-sagittarius { left: 71%; top: 8%; }
+.moon .constellation-lines { fill: none; stroke: #fff3d9; stroke-opacity: .28; stroke-width: .65; stroke-linecap: round; stroke-linejoin: round; }
+.moon .constellation-lines path { stroke-dasharray: 1; vector-effect: non-scaling-stroke; }
+.moon .constellation-stars { fill: #fff3d9; }
+.moon .constellation-halo { opacity: .075; }
+.moon .moon-shooting-star { position: absolute; left: 0; top: 0; width: 7.5%; height: auto; fill: #fff3d9; overflow: visible; transform-origin: 94% 50%; }
+.moon .moon-shooting-star path { fill: none; stroke: #fff3d9; stroke-width: 1.1; stroke-linecap: round; }

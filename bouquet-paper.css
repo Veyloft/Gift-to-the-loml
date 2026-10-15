@@ -1,0 +1,168 @@
+/* This background is confined to the bouquet spread, including its turn
+   snapshots. Foreground artwork, lyric cards and motion keep their styles. */
+.spread.flowers {
+  background: #edc8bf url('assets/bouquet-flattened-cardstock.webp') center / cover no-repeat;
+}
+
+.flowers .bouquet-paper-poetry {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3.2%;
+  padding: 4% 4.5%;
+  color: #69434b;
+  opacity: .195;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  font: 400 clamp(8px, 2.65cqh, 16px) / 1.42 Georgia, 'Times New Roman', Times, serif;
+  -webkit-mask-image: linear-gradient(#000 0 72%, #0009 100%);
+  mask-image: linear-gradient(#000 0 72%, #0009 100%);
+}
+
+.flowers .bouquet-paper-poetry article {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.flowers .bouquet-paper-poetry h3 {
+  margin: 0 0 .75em;
+  font: 700 .9em / 1.3 Georgia, 'Times New Roman', Times, serif;
+  letter-spacing: .06em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.flowers .bouquet-paper-poetry p {
+  margin: 0 0 .8em;
+  text-align: justify;
+  hyphens: auto;
+  overflow-wrap: break-word;
+}
+
+.flowers .bouquet-paper-poetry p + p {
+  text-indent: 1em;
+}
+
+/* Layout belongs to this outer mount. The original inner bouquet keeps its
+   animation, transform origin, perspective and six-second sway unchanged. */
+.flowers .bouquet-layout {
+  position: absolute;
+  left: 18.3%;
+  top: 3%;
+  width: 63.4%;
+  height: 108%;
+  pointer-events: none;
+}
+
+.flowers .bouquet-poem {
+  position: absolute;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  color: #49301f;
+  pointer-events: none;
+}
+
+/* Nine-sliced cream paper retains its grain and small uneven edge without
+   stretching a whole note image or rasterizing either poem. */
+.flowers .bouquet-poem::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: clamp(5px, 1.2cqh, 9px) solid transparent;
+  border-image: url('assets/cover-start-paper.png') 24 fill / 1 stretch;
+}
+
+.flowers .bouquet-poem::after {
+  content: '';
+  position: absolute;
+  inset: 2px -1px -3px 2px;
+  z-index: -2;
+  background: #603b3029;
+  clip-path: polygon(3% 0, 97% 0, 100% 4%, 100% 95%, 97% 100%, 3% 100%, 0 96%, 0 4%);
+}
+
+.flowers .bouquet-poem p {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.flowers .bouquet-poem-left {
+  left: 4.3%;
+  top: 36%;
+  width: 22.2%;
+  height: 30%;
+  padding: 1% 1.7%;
+  transform: rotate(-6deg);
+  font: 400 clamp(17px, 4.6cqh, 30px) / 1.3 var(--hand);
+}
+
+.flowers .bouquet-photo {
+  position: absolute;
+  left: 75%;
+  top: 4%;
+  width: 21.5%;
+  height: 34.5%;
+  margin: 0;
+  padding: clamp(4px, 1.2cqh, 8px);
+  background: #f9ecd6 url('assets/cover-start-paper.png') center / cover;
+  box-shadow: 1px 3px 4px #694b3730;
+  transform: rotate(5deg);
+  pointer-events: none;
+}
+
+.flowers .bouquet-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.flowers .bouquet-poem-right {
+  left: 75.8%;
+  top: 41%;
+  width: 19.3%;
+  height: 32%;
+  padding: .6% 1%;
+  transform: rotate(2.5deg);
+  text-align: center;
+  font: italic 400 clamp(12px, 2.9cqh, 20px) / 1.1 Georgia, 'Times New Roman', serif;
+}
+
+.flowers .bouquet-poem-right small {
+  display: block;
+  margin-top: .4em;
+  font-size: .57em;
+  line-height: 1;
+  letter-spacing: .015em;
+}
+
+@media (max-height: 450px) and (orientation: landscape) {
+  .flowers .bouquet-poem-left {
+    font-size: clamp(15px, 2.45cqw, 17px);
+  }
+  .flowers .bouquet-photo {
+    left: 76%;
+    width: 20%;
+    height: 29%;
+  }
+  .flowers .bouquet-poem-right {
+    top: 34.5%;
+    width: 20.5%;
+    left: 75.2%;
+    height: 39%;
+    font-size: clamp(11px, 3.75cqh, 13px);
+    line-height: 1.05;
+  }
+  .flowers .bouquet-poem-right small {
+    font-size: 8px;
+  }
+}

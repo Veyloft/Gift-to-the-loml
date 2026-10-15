@@ -1,0 +1,101 @@
+/* Only this spread changes. The existing photo buttons, travel, pages and gates remain. */
+.together .pair-lyrics .mine-word{display:inline-block;opacity:var(--mine-reveal,0);color:#fffdf4;font-family:var(--hand);font-weight:600;-webkit-text-stroke:.85px #896347;text-shadow:0 1px 0 #996d4b,0 0 calc(var(--mine-reveal,0)*12px) #ffd986;transform:translateY(calc((1 - var(--mine-reveal,0))*3px));font-size:1.15em;line-height:.85;min-width:2.25em}
+.together .person{overflow:visible;isolation:isolate}
+.together .person-portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;overflow:visible}
+.together .person-photo{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.together .angel-piece{position:absolute;display:block;overflow:hidden;pointer-events:none}
+.together .angel-piece .angel-sheet{position:absolute;max-width:none;width:var(--sheet-width);height:auto;left:var(--sheet-left);top:var(--sheet-top);object-fit:initial}
+.together .angel-halo{width:30%;left:64%;top:-3.2%;z-index:2;transform:rotate(14deg)}
+/* Portrait-relative anchors follow her lean. Both wings share the shoulder axis
+   and meet behind her upper back, rather than the rectangular image frame. */
+.together .angel-wings{position:absolute;inset:0;z-index:0;pointer-events:none;transform:rotate(12deg);transform-origin:63% 18.5%}
+.together .angel-wing-left{width:36%;left:24%;top:16.5%;z-index:0}
+.together .angel-wing-right{width:36%;left:65%;top:16.5%;z-index:0}
+.together .dragon-party,.together .dragon-group{position:absolute;inset:0;pointer-events:none}
+.together .dragon-party{z-index:11}
+.together .dragon-sprite{position:absolute;container-type:inline-size;line-height:0}
+.together .dragon-sprite>img{display:block;width:100%;height:auto;object-fit:contain}
+.together .dragon-eyes{position:absolute;left:var(--eye-x);top:var(--eye-y);width:1em;height:1em;font-size:clamp(16px,var(--eye-size),42px);line-height:1;translate:-50% -50%;opacity:0;scale:.8}
+.together .iphone-eyes-image{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.together .emoji-label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.together .bubble-emoji{position:relative;display:inline-block;width:1.15em;height:1.15em;vertical-align:-.27em}
+.together .reaction-bubble{position:absolute;display:block;white-space:nowrap;border:0;border-radius:1em;background:#fff;color:#70414e;box-shadow:1px 3px 3px #7c445526;padding:.23em .65em;font:clamp(14px,3cqh,21px)/1.1 var(--hand);opacity:0;scale:.84;pointer-events:none;transform-origin:50% 90%}
+.together .reaction-bubble:after{content:'';position:absolute;width:12px;height:12px;background:inherit;right:15%;bottom:-6px;clip-path:path('M 0 0 L 12 0 C 9 5 8 9 12 12 C 3 11 0 7 0 0 Z');transform:rotate(10deg)}
+.together .tail-up:after{top:-6px;bottom:auto;transform:rotate(190deg)}
+.together .dragon-group[data-dragon="strawberry"] .dragon-bubble{left:88%!important}
+.together .dragon-group[data-dragon="strawberry"] .dragon-bubble:after{right:auto;left:14%}
+.together.dragons-reacting .dragon-eyes,.together.dragons-reacting .dragon-bubble{opacity:1;scale:1;animation:gentle-reaction .27s cubic-bezier(.2,.8,.3,1) both}
+.together.dragons-reacting[data-reaction-repeat="a"] .dragon-eyes,.together.dragons-reacting[data-reaction-repeat="a"] .dragon-bubble{animation-name:gentle-react-again-a}
+.together.dragons-reacting[data-reaction-repeat="b"] .dragon-eyes,.together.dragons-reacting[data-reaction-repeat="b"] .dragon-bubble{animation-name:gentle-react-again-b}
+.together .kissing-face{position:absolute;width:33%;height:auto;left:38%;top:10.5%;z-index:3;opacity:0;scale:.85;pointer-events:none}
+.together .kiss-bubble{left:-56%;top:18%;z-index:4;font-size:clamp(14px,3.3cqh,23px);transform:translateY(-50%);transform-origin:100% 50%}
+.together .kiss-bubble:after{right:-8px;bottom:auto;top:45%;transform:rotate(-90deg)}
+.together.kiss-complete .kissing-face,.together.kiss-complete .kiss-bubble{opacity:1;scale:1;animation:gentle-reaction .3s cubic-bezier(.2,.8,.3,1) both}
+@keyframes gentle-reaction{0%{opacity:0;scale:.84}75%{opacity:1;scale:1.035}100%{opacity:1;scale:1}}
+@keyframes gentle-react-again-a{0%{opacity:1;scale:.95}75%{opacity:1;scale:1.035}100%{opacity:1;scale:1}}
+@keyframes gentle-react-again-b{0%{opacity:1;scale:.95}75%{opacity:1;scale:1.035}100%{opacity:1;scale:1}}
+@media(max-height:450px) and (orientation:landscape){
+ .together .reaction-bubble{font-size:14px;padding:.16em .5em}
+ .together .kiss-bubble{font-size:16px;left:-69%}
+ .together .dragon-group[data-dragon="golden"] .dragon-bubble{top:9%!important}
+ .together .dragon-group[data-dragon="strawberry"] .dragon-bubble{left:87%!important}
+ .together .dragon-group[data-dragon="chocolate-chip"] .dragon-bubble{left:79.5%!important}
+}
+@media(prefers-reduced-motion:reduce){.together.dragons-reacting .dragon-eyes,.together.dragons-reacting .dragon-bubble,.together.kiss-complete .kissing-face,.together.kiss-complete .kiss-bubble{animation:none}}
+
+/* The original drag button owns the whole assembly, including its visibility,
+   prepared state and hit area. Decorative layers never receive pointer input. */
+.together .together-cue {
+  isolation: isolate;
+  overflow: visible;
+  bottom: max(3%, 6px);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50px;
+  color: #91465e;
+  box-shadow: none;
+  transition: transform .15s;
+}
+
+.together .together-cue::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: 1;
+  border: 1px solid #cc91a4;
+  border-radius: inherit;
+  background: linear-gradient(#fff8ecdc, #fff0e5dc), url('assets/cover-start-paper.png') center / cover;
+  box-shadow: 0 4px 0 #b5728b, 0 7px 9px #67374620;
+  pointer-events: none;
+}
+
+.together .closer-character {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% - 16px);
+  width: clamp(120px, 15cqw, 166px);
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.together .closer-character img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.together .closer-label {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.together .together-cue:active {
+  transform: translateY(3px);
+}
+
+@media (max-height: 450px) and (orientation: landscape) {
+  .together .together-cue { bottom: max(1%, 6px); }
+}

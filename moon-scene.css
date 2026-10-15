@@ -1,0 +1,23 @@
+/* Original night background, stars, moon artwork, placement, glow and rotation
+   remain in styles.css. These rules rebuild only the foreground. */
+.moon .lunar-platform{position:absolute;left:0;right:0;top:58%;bottom:-1%;z-index:1;pointer-events:none}
+.moon .platform-surface,.moon .platform-depth{position:absolute;left:0;right:0;overflow:hidden}
+.moon .platform-surface{top:0;height:90%}
+.moon .platform-depth{top:90%;bottom:0}
+/* Crop the transparent cutout perimeter beyond the page. Both sections meet
+   at source y=60%; the lower face ends before the ragged transparent base. */
+.moon .lunar-platform img{position:absolute;left:-6%;width:112%;object-fit:fill;display:block;filter:brightness(.7)}
+.moon .platform-surface img{top:0;height:166.6667%}
+.moon .platform-depth img{bottom:-33.3333%;height:333.3333%}
+.moon .lunar-pop{z-index:2}
+.moon .moon-stone{opacity:1;transform:translateX(-50%);filter:none;z-index:7;overflow:visible;isolation:isolate}
+.moon .stone-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;z-index:2;filter:brightness(.84)}
+.moon .stone-contact{position:absolute;left:5%;right:3%;bottom:-2%;height:16%;z-index:0;border-radius:50%;background:radial-gradient(ellipse,#05060ed9 0%,#0a0c1699 35%,transparent 72%);pointer-events:none}
+.moon .moon-stone .stone-lettering{position:absolute;inset:12% 8% 36%;z-index:3;display:grid;place-items:center;opacity:var(--reveal,0);clip-path:inset(0 calc((1 - var(--reveal,0))*100%) 0 0);color:#353541;text-shadow:0 -.85px .65px #0a0b18ed,0 1px .65px #e1dcecbb,.5px 0 .4px #10122099;font:clamp(15px,4cqh,30px)/1 var(--print);transform:rotate(var(--tilt));white-space:nowrap}
+.moon .moon-breather{position:absolute;left:48.8%;top:56%;height:27%;aspect-ratio:303/1090;transform:translateX(-50%);z-index:9;pointer-events:none}
+.moon .figure-fallback,.moon .breathing-figure{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:hidden}
+.moon .breathing-figure{visibility:hidden}
+.moon .figure-ready .breathing-figure{visibility:visible}
+.moon .figure-ready .figure-fallback{visibility:hidden}
+.moon .figure-contact{position:absolute;left:4%;right:14%;bottom:-1%;height:4%;border-radius:50%;background:radial-gradient(ellipse,#03040be6 0%,#060710aa 30%,transparent 73%);pointer-events:none}
+@media(max-height:450px) and (orientation:landscape){.moon .moon-breather{top:58%;height:25%}}

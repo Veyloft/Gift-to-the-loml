@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#542836">
+  <meta name="description" content="A little book for Melkic.">
+  <title>Melanina</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23542836'/%3E%3Cpath d='M16 25C-3 13 9 1 16 10C23 1 35 13 16 25' fill='%23f5afc2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="moon-scene.css">
+  <link rel="stylesheet" href="moon-sky.css">
+  <link rel="stylesheet" href="balloon-clouds.css">
+  <link rel="preload" href="assets/lilita-one.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="finale-repeat.css">
+  <link rel="stylesheet" href="pusheen-ending.css">
+  <link rel="stylesheet" href="welcome-cover.css">
+  <link rel="stylesheet" href="together-scene.css">
+  <link rel="stylesheet" href="bouquet-accents.css">
+  <link rel="stylesheet" href="page-edge.css">
+  <link rel="stylesheet" href="lyric-paper.css">
+  <link rel="stylesheet" href="bouquet-paper.css">
+  <link rel="stylesheet" href="cat-family.css">
+  <link rel="stylesheet" href="letter-family.css">
+  <link rel="preload" href="assets/bouquet-flattened-cardstock.webp" as="image">
+</head>
+<body>
+  <main id="gift" aria-label="Melanina, a gift for Melkic">
+    <section id="welcome">
+      <div class="welcome-layout">
+        <div class="welcome-art">
+          <div class="closed-book" aria-label="A handmade pink book for the love of my life">
+            <div class="cover-ribbon" aria-hidden="true"></div>
+            <div class="closed-pages" aria-hidden="true"></div>
+            <div class="cover-binding" aria-hidden="true"></div>
+            <div class="cover-board">
+              <img class="cover-moon" src="assets/cover-moon-original.png" alt="" draggable="false">
+              <img class="cover-balloons" src="assets/cover-balloons-original.png" alt="" draggable="false">
+              <div class="cover-album"><img src="assets/congratulations-album.png" alt="Congratulations album artwork" draggable="false"></div>
+              <p class="cover-dedication">for the love of my life</p>
+              <img class="cover-cats" src="assets/cover-cats-supplied-transparent.png" alt="Two cuddling cats with I love you and hearts" draggable="false">
+              <img class="cover-bow-tail" src="assets/cover-bow-clean.png" alt="" draggable="false">
+              <img class="cover-bow" src="assets/cover-bow-clean.png" alt="" draggable="false">
+            </div>
+          </div>
+          <button id="welcome-note" class="welcome-sticky" aria-label="Click me ;3" aria-haspopup="dialog"><span>Click<br>me ;3</span><span class="sticky-heart" aria-hidden="true">♡</span></button>
+        </div>
+        <div class="welcome-start"><img class="start-arrow" src="assets/cover-arrow.png" alt="" draggable="false"><button id="start" class="bubbly" disabled>start ur gift ♡</button></div>
+        <p id="load-note" role="status">getting ur gift ready…</p>
+      </div>
+    </section>
+    <section id="stage" hidden><div id="book" class="book"><div id="spread" class="spread"></div><div class="gutter"></div><div id="turn-sheet" aria-hidden="true"></div></div><span id="page-edge-cue" class="page-edge-cue" hidden aria-hidden="true"><i>←</i><span>swipe left :3</span></span></section>
+    <section id="orientation" hidden><div class="device-illustration" aria-hidden="true"><div class="device-doodle"><svg viewBox="0 0 65 110" focusable="false"><rect x="1.5" y="1.5" width="62" height="107" rx="10.5" fill="none" stroke="#f5b2c8" stroke-width="3"/></svg></div><svg class="device-heart" viewBox="0 0 65 110" focusable="false"><text x="32.5" y="55" text-anchor="middle" dominant-baseline="central" fill="currentColor">♡</text></svg></div><p>turn ur device sideways for the best experience ♡</p></section>
+    <section id="resume-layer" hidden><button id="resume" class="bubbly">continue ur gift ♡</button><p id="resume-note">right where we left it</p></section>
+    <button id="pause" hidden aria-label="Pause the music" class="quiet-control">Ⅱ</button>
+    <div id="reading" hidden></div>
+  </main>
+  <audio id="music" preload="auto" src="assets/congratulations.mp3"></audio>
+  <script src="boot.js"></script>
+</body>
+</html>
