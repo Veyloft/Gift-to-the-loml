@@ -1,3 +1,4 @@
+import {trackPointer} from './pointer-gesture.js';
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
 export const edgeWidth=width=>clamp(width*.09,56,88);
 export const swipeDistance=width=>clamp(width*.08,36,64);
@@ -12,9 +13,6 @@ export class PageEdgeFlip {
  constructor({book,cue,available,key,flip}){
   Object.assign(this,{book,cue,available,key,flip});this.gesture=null;
   book.addEventListener('pointerdown',e=>this.down(e));
-  book.addEventListener('pointermove',e=>this.move(e));
-  book.addEventListener('pointerup',e=>this.up(e));
-  for(const type of ['pointercancel','lostpointercapture'])book.addEventListener(type,e=>{if(this.gesture?.id===e.pointerId)this.cancel();});
   this.access=document.createElement('span');this.access.className='page-edge-access';this.access.setAttribute('role','button');this.access.tabIndex=-1;
   this.access.setAttribute('aria-label','Turn the page: swipe left from its right edge');this.access.dataset.interactive='';
   this.access.onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&!e.repeat&&this.available()){e.preventDefault();e.stopPropagation();this.flip();}};
@@ -26,8 +24,9 @@ export class PageEdgeFlip {
   const r=this.book.getBoundingClientRect();
   if(e.clientX<r.right-edgeWidth(r.width)||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)return;
   e.preventDefault();e.stopImmediatePropagation();
-  this.book.setPointerCapture(e.pointerId);
   this.gesture={id:e.pointerId,key:this.key(),pointerType:e.pointerType,x:e.clientX,y:e.clientY,dx:0,dy:0,travel:0,age:performance.now(),width:r.width};
+  const g=this.gesture;
+  g.pointer=trackPointer(this.book,e,{move:event=>this.move(event),end:event=>this.up(event),cancel:()=>{if(this.gesture===g)this.cancel();}});
  }
  move(e){
   if(this.gesture?.id!==e.pointerId)return;
@@ -43,7 +42,7 @@ export class PageEdgeFlip {
  }
  cancel(){
   const g=this.gesture;this.gesture=null;
-  if(g&&this.book.hasPointerCapture(g.id))this.book.releasePointerCapture(g.id);
+  g?.pointer?.stop();
  }
  update(ready){
   const changed=this.cue.hidden===ready;
