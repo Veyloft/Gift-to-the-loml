@@ -1,6 +1,9 @@
 /* Only this spread changes. The existing photo buttons, travel, pages and gates remain. */
 .together .pair-lyrics .mine-word{display:inline-block;opacity:var(--mine-reveal,0);color:#fffdf4;font-family:var(--hand);font-weight:600;-webkit-text-stroke:.85px #896347;text-shadow:0 1px 0 #996d4b,0 0 calc(var(--mine-reveal,0)*12px) #ffd986;transform:translateY(calc((1 - var(--mine-reveal,0))*3px));font-size:1.15em;line-height:.85;min-width:2.25em}
 .together .person{overflow:visible;isolation:isolate}
+/* Suppress native long-press/image gestures only on the photo controls and cue. */
+.together .person,.together .together-cue{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.together .person img,.together .together-cue img{-webkit-user-drag:none}
 .together .person-portrait{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);pointer-events:none;overflow:visible}
 .together .person-photo{position:absolute;inset:0;width:100%;height:100%;z-index:1}
 .together .angel-piece{position:absolute;display:block;overflow:hidden;pointer-events:none}
