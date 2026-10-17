@@ -13,6 +13,7 @@ import {TogetherScene,togetherAssets,angelDetails,dragonParty,kissingReaction} f
 import {PusheenEnding,endingAssets} from './pusheen-ending.js';
 import {SongLevel} from './audio-level.js';
 import {PageEdgeFlip} from './page-edge.js';
+import {trackPointer,bookAxes,bookDelta} from './pointer-gesture.js';
 import {catFamilySpread} from './cat-family.js';
 let pusheenEnding=null;
 let moonBreather=null;
@@ -93,17 +94,47 @@ function syncPauseUI(){const freeze=[...pauses].some(r=>r!=='gate');$('gift').cl
 async function play(){if(pauses.size||phase==='opening')return;const generation=playbackGeneration;try{await songLevel.unlock();if(generation!==playbackGeneration||pauses.size)return;await music.play();if(generation===playbackGeneration&&!pauses.size)$('resume-layer').hidden=true;}catch(error){if(generation!==playbackGeneration||phase==='welcome'||pauses.size||error.name==='AbortError')return;setPause('interrupted',true);showResume('tap to keep going ♡');}}
 function showResume(message='right where we left it'){$('resume-note').textContent=message;$('resume-layer').hidden=false;}
 function orientation(){const portrait=matchMedia('(orientation:portrait)').matches,gated=['welcome','opening','story'].includes(phase);$('orientation').hidden=!portrait||!gated;if(['opening','story'].includes(phase)&&portrait){setPause('orientation',true);cancelGesture();}else if(pauses.has('orientation')){setPause('orientation',false);setPause('interrupted',true);showResume();}resizeCanvas();moonSky?.resize();cloudFlow?.resize();finaleRepeat?.resize();}
-function prepareCurrent(action){const g=story.gate;if(phase!=='story'||!g||g.action!==action||pauses.has('orientation')||pauses.has('manual'))return false;if(!story.prepare(g.id))return false;updateVisuals();if(story.waiting===g.id){step(story.time);if(!pauses.size)play();}return true;}
+function prepareCurrent(action){const g=story.gate;if(phase!=='story'||!g||g.action!==action||[...pauses].some(r=>r!=='gate'))return false;if(!story.prepare(g.id))return false;if(action==='together')togetherScene?.movement(1);updateVisuals();if(story.waiting===g.id){step(story.time);if(!pauses.size)play();}return true;}
 function bindDrag(target,direction){
  const expectedAction=target.classList.contains('person')||target.id==='together-cue'?'together':'pull';
- const move=e=>{if(!drag||drag.id!==e.pointerId||drag.target!==target)return;const d=direction==='up'?drag.y-e.clientY:direction==='down'?e.clientY-drag.y:direction==='left'?drag.x-e.clientX:e.clientX-drag.x;drag.p=clamp(d/drag.distance,0,1);$('spread').style.setProperty('--pull',drag.p);if(story.scene.id==='together')togetherScene?.movement(drag.p);target.classList.toggle('pull-ready',drag.p>=.75);e.preventDefault();};
- target.addEventListener('pointerdown',e=>{const g=story.gate;if(drag||!e.isPrimary||e.button!==0||!g||g.action!==expectedAction||!story.available()||[...pauses].some(r=>r!=='gate')||story.prepared.has(g.id))return;e.preventDefault();e.stopPropagation();const distance=clamp((story.scene.id==='love'?$('book').clientHeight:$('book').getBoundingClientRect().height)*.13,36,80);target.setPointerCapture(e.pointerId);drag={id:e.pointerId,gate:g.id,target,direction,x:e.clientX,y:e.clientY,p:0,distance};if(story.scene.id==='together')togetherScene?.beginAttempt();if(story.scene.id!=='love')$('spread').style.setProperty('--drag-distance',distance+'px');target.classList.add('dragging');$('spread').classList.add('dragging-mechanism');});
- target.addEventListener('pointermove',move);
- target.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId||drag.target!==target)return;move(e);const d=drag;cancelGesture();if(d.p>=.75&&story.gate?.id===d.gate)prepareCurrent(expectedAction);});
- const cancel=e=>{if(drag?.id===e.pointerId&&drag.target===target)cancelGesture();};
- target.addEventListener('pointercancel',cancel);target.addEventListener('lostpointercapture',cancel);target.addEventListener('click',e=>{if(e.detail===0)prepareCurrent(expectedAction);});
+ const tapControl=target.id==='together-cue';let suppressPointerClick=false;
+ const move=e=>{
+  if(!drag||drag.id!==e.pointerId||drag.target!==target)return;
+  const delta=bookDelta(drag.axes,e.clientX-drag.x,e.clientY-drag.y);
+  const distance=direction==='up'?-delta.y:direction==='down'?delta.y:direction==='left'?-delta.x:delta.x;
+  drag.travel=Math.max(drag.travel,Math.hypot(e.clientX-drag.x,e.clientY-drag.y));
+  drag.p=clamp(distance/drag.distance,0,1);$('spread').style.setProperty('--pull',drag.p);
+  if(story.scene.id==='together')togetherScene?.movement(drag.p);
+  target.classList.toggle('pull-ready',drag.p>=.75);
+ };
+ const activate=()=>{cancelGesture();return prepareCurrent(expectedAction);};
+ target.addEventListener('pointerdown',e=>{
+  const g=story.gate;
+  if(drag||!e.isPrimary||e.button!==0||!g||g.action!==expectedAction||!story.available()||[...pauses].some(r=>r!=='gate')||story.prepared.has(g.id))return;
+  e.preventDefault();e.stopPropagation();suppressPointerClick=false;
+  const distance=clamp($('book').clientHeight*.13,36,80);
+  const attempt={id:e.pointerId,gate:g.id,target,direction,x:e.clientX,y:e.clientY,p:0,travel:0,distance,axes:bookAxes($('book')),suppressClick:()=>{suppressPointerClick=true;}};drag=attempt;
+  if(story.scene.id==='together')togetherScene?.beginAttempt();
+  if(story.scene.id!=='love')$('spread').style.setProperty('--drag-distance',distance+'px');
+  target.classList.add('dragging');$('spread').classList.add('dragging-mechanism');
+  attempt.pointer=trackPointer(target,e,{
+   move,
+   end:event=>{
+    if(drag!==attempt)return;move(event);
+    const complete=attempt.p>=.75||(tapControl&&attempt.travel<=8);
+    suppressPointerClick=true;cancelGesture();
+    if(complete&&story.gate?.id===attempt.gate)prepareCurrent(expectedAction);
+   },
+   cancel:()=>{if(drag===attempt){suppressPointerClick=true;cancelGesture();}}
+  });
+ },{passive:false});
+ target.addEventListener('dragstart',e=>e.preventDefault());
+ target.addEventListener('click',e=>{
+  if(tapControl){e.preventDefault();e.stopPropagation();if(e.detail>0&&suppressPointerClick)return;activate();}
+  else if(e.detail===0)activate();
+ });
 }
-function cancelGesture(){pageEdge.cancel();if(drag){const d=drag;drag=null;d.target.classList.remove('dragging','pull-ready');$('spread').classList.remove('dragging-mechanism');$('spread').style.setProperty('--pull',0);try{if(d.target.hasPointerCapture(d.id))d.target.releasePointerCapture(d.id);}catch{}}clearTimeout(holdTimer);if(holdPointer!==null){holdPointer=null;setPause('hold',false);}}
+function cancelGesture(){pageEdge.cancel();if(drag){const d=drag;drag=null;d.suppressClick?.();d.pointer?.stop();d.target.classList.remove('dragging','pull-ready');$('spread').classList.remove('dragging-mechanism');$('spread').style.setProperty('--pull',0);}clearTimeout(holdTimer);if(holdPointer!==null){holdPointer=null;setPause('hold',false);}}
 function pageFlipReady(){const g=story.gate;return phase==='story'&&g?.action==='flip'&&story.available()&&!story.prepared.has(g.id)&&!paperTurn.active&&!drag;}
 function step(t){
  if(phase!=='story')return;const result=story.tick(t);
@@ -174,7 +205,7 @@ $('start').onclick=()=>{
  $('pause').hidden=true;syncPauseUI();
  unlocked.then(()=>{if(generation!==playbackGeneration||phase!=='opening')return;music.pause();music.currentTime=startPosition;}).catch(error=>{if(generation!==playbackGeneration||phase==='welcome'||error.name==='AbortError')return;setPause('interrupted',true);showResume('tap to start the music ♡');});
 };
-$('pause').onclick=()=>{if(pauses.has('manual')){setPause('manual',false);play();}else setPause('manual',true);};
+$('pause').onclick=()=>{if(pauses.has('manual')){setPause('manual',false);play();}else{cancelGesture();setPause('manual',true);}};
 $('resume').onclick=async()=>{
  if(music.error||mediaNeedsReload){
   const position=phase==='story'?story.time:lastPlaybackPosition;
@@ -195,7 +226,7 @@ $('resume').onclick=async()=>{
 $('book').addEventListener('pointerdown',e=>{if(phase!=='story'||['love','together','pink','blue'].includes(story.scene.id)||e.target.closest('[data-interactive],button,input')||story.turning)return;holdPointer=e.pointerId;holdTimer=setTimeout(()=>{if(holdPointer===e.pointerId)setPause('hold',true);},350);});
 $('gift').addEventListener('pointerdown',e=>{if(!['ending','letter'].includes(phase)||!e.isPrimary||e.button!==0||e.target.closest('[data-interactive],button,input,dialog,.letter-sheet'))return;holdPointer=e.pointerId;holdTimer=setTimeout(()=>{if(holdPointer===e.pointerId)setPause('hold',true);},350);});
 addEventListener('pointerup',e=>{if(holdPointer!==e.pointerId)return;clearTimeout(holdTimer);holdPointer=null;if(pauses.has('hold')){setPause('hold',false);play();}});
-addEventListener('pointercancel',()=>{const held=pauses.has('hold');cancelGesture();if(held)play();});
+addEventListener('pointercancel',e=>{if(drag?.id!==e.pointerId&&holdPointer!==e.pointerId)return;const held=pauses.has('hold');cancelGesture();if(held)play();});
 addEventListener('resize',orientation);addEventListener('orientationchange',()=>{if(['opening','story'].includes(phase)){setPause('orientation',true);cancelGesture();}requestAnimationFrame(()=>requestAnimationFrame(orientation));});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&phase!=='welcome'){cancelGesture();setPause('interrupted',true);}else if(pauses.has('interrupted'))showResume();});
 music.addEventListener('waiting',()=>{if(phase==='story')$('gift').classList.add('frozen');});music.addEventListener('playing',syncPauseUI);
