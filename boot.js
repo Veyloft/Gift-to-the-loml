@@ -9,7 +9,7 @@ if(location.protocol==='file:'){
   startButton.disabled=false;
   startButton.onclick=()=>location.assign('http://127.0.0.1:4173/');
 }else{
-  import('./app.js').catch(error=>{
+  import('./app.js?v=touch-20261017-2').catch(error=>{
     console.error('Melanina could not initialize',error);
     loadingNote.textContent='a little hiccup — tap to reload ur gift ♡';
     startButton.textContent='try again ♡';
