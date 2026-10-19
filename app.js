@@ -13,7 +13,7 @@ import {TogetherScene,togetherAssets,angelDetails,dragonParty,kissingReaction} f
 import {PusheenEnding,endingAssets} from './pusheen-ending.js';
 import {SongLevel} from './audio-level.js';
 import {PageEdgeFlip} from './page-edge.js';
-import {trackPointer,bookAxes,bookDelta} from './pointer-gesture.js';
+import {trackPointer,bookAxes,bookDelta} from './pointer-gesture.js?v=touch-20261017-2';
 import {catFamilySpread} from './cat-family.js';
 let pusheenEnding=null;
 let moonBreather=null;
@@ -21,6 +21,8 @@ let moonSky=null;
 let cloudFlow=null;
 let finaleRepeat=null;
 let togetherScene=null;
+const inputBuild='touch-20261017-2';
+let touchDiagnostics=null;
 const $=id=>document.getElementById(id),music=$('music'),story=new Story(),pauses=new Set();
 const songLevel=new SongLevel(music);
 const paperTurn=new PaperTurn($('turn-sheet'));
@@ -72,7 +74,10 @@ function renderScene(){
  togetherScene=scene.id==='together'?new TogetherScene($('spread')):null;
  if(scene.id==='pink'){$('pink-text').textContent=pinkParagraph;$('expand').onclick=expandParagraph;}
  if($('pull'))bindDrag($('pull'),scene.id==='blue'?'up':'down');
- if(scene.id==='together')for(const id of ['person-left','person-right','together-cue'])bindDrag($(id),id==='person-right'?'left':'right');
+ if(scene.id==='together'){
+  bindDrag($('person-left'),'right');bindDrag($('person-right'),'left');
+  bindTogetherCue($('together-cue'));
+ }
  canvas=$('mechanism');ctx=canvas?.getContext('2d');if(canvas)resizeCanvas();updateVisuals();
 }
 function resizeCanvas(){const transform=$('book').style.transform;if(bookOpening.active)$('book').style.transform='';paperTurn.resize();if(bookOpening.active){bookOpening.resize();$('book').style.transform=transform;};if(!canvas)return;const s=Math.min(devicePixelRatio||1,2);for(const c of [canvas,$('spiral-core')].filter(Boolean)){const r=bookOpening.active?{width:$('book').clientWidth/2,height:$('book').clientHeight}:c.getBoundingClientRect();c.width=Math.ceil(r.width*s);c.height=Math.ceil(r.height*s);}if(paperTurn.active||bookOpening.active)drawMechanism();}
@@ -94,10 +99,68 @@ function syncPauseUI(){const freeze=[...pauses].some(r=>r!=='gate');$('gift').cl
 async function play(){if(pauses.size||phase==='opening')return;const generation=playbackGeneration;try{await songLevel.unlock();if(generation!==playbackGeneration||pauses.size)return;await music.play();if(generation===playbackGeneration&&!pauses.size)$('resume-layer').hidden=true;}catch(error){if(generation!==playbackGeneration||phase==='welcome'||pauses.size||error.name==='AbortError')return;setPause('interrupted',true);showResume('tap to keep going ♡');}}
 function showResume(message='right where we left it'){$('resume-note').textContent=message;$('resume-layer').hidden=false;}
 function orientation(){const portrait=matchMedia('(orientation:portrait)').matches,gated=['welcome','opening','story'].includes(phase);$('orientation').hidden=!portrait||!gated;if(['opening','story'].includes(phase)&&portrait){setPause('orientation',true);cancelGesture();}else if(pauses.has('orientation')){setPause('orientation',false);setPause('interrupted',true);showResume();}resizeCanvas();moonSky?.resize();cloudFlow?.resize();finaleRepeat?.resize();}
-function prepareCurrent(action){const g=story.gate;if(phase!=='story'||!g||g.action!==action||[...pauses].some(r=>r!=='gate'))return false;if(!story.prepare(g.id))return false;if(action==='together')togetherScene?.movement(1);updateVisuals();if(story.waiting===g.id){step(story.time);if(!pauses.size)play();}return true;}
+function prepareCurrent(action,source='control'){
+ const g=story.gate;
+ const reject=reason=>{touchDiagnostics?.record('action',{action,source,accepted:false,reason});return false;};
+ if(phase!=='story')return reject('not-story');
+ if(!g)return reject('no-gate');
+ if(g.action!==action)return reject('different-gate-action');
+ if([...pauses].some(r=>r!=='gate'))return reject('paused');
+ if(story.prepared.has(g.id))return reject('already-prepared');
+ if(story.turning)return reject('page-turn-running');
+ if(!story.available(g))return reject('before-availability-window');
+ if(!story.prepare(g.id))return reject('story-rejected');
+ if(action==='together')togetherScene?.movement(1);
+ updateVisuals();
+ // waiting records that this exact cue was already reached. Media seek
+ // readback may be a fraction below it; do not wait on a paused audio clock.
+ if(story.waiting===g.id){step(Math.max(story.time,g.at));if(!pauses.size)play();}
+ touchDiagnostics?.record('action',{action,source,accepted:true,reason:'prepared',gate:g.id});
+ return true;
+}
+function bindTogetherCue(target){
+ // A native click owns tapping/keyboard activation. No pointer event, capture,
+ // drag distance or pointer-up callback is required for this action to run.
+ target.addEventListener('click',e=>{
+  e.preventDefault();e.stopPropagation();
+  cancelGesture();prepareCurrent('together','cue-click');
+ });
+ // Retain the existing rightward central-control drag, but observe a tap
+ // without preventing its native click or taking explicit pointer capture.
+ target.addEventListener('pointerdown',e=>{
+  if(!e.isPrimary||e.button!==0){touchDiagnostics?.record('gesture-rejected',{target:target.id,reason:'non-primary-pointer'});return;}
+  const g=story.gate;
+  const blocked=!g?'no-gate':g.action!=='together'?'different-gate-action':!story.available()?'before-availability-window':story.prepared.has(g.id)?'already-prepared':[...pauses].some(r=>r!=='gate')?'paused':null;
+  if(blocked){touchDiagnostics?.record('gesture-rejected',{target:target.id,reason:blocked});return;}
+  if(drag)cancelGesture();
+  const attempt={id:e.pointerId,gate:g.id,target,direction:'right',x:e.clientX,y:e.clientY,p:0,travel:0,distance:clamp($('book').clientHeight*.13,36,80),axes:bookAxes($('book'))};
+  drag=attempt;togetherScene?.beginAttempt();
+  const travel=event=>Math.hypot(event.clientX-attempt.x,event.clientY-attempt.y);
+  const move=event=>{
+   if(drag!==attempt)return;
+   attempt.travel=Math.max(attempt.travel,travel(event));
+   if(attempt.travel<=8)return;
+   const delta=bookDelta(attempt.axes,event.clientX-attempt.x,event.clientY-attempt.y);
+   attempt.p=clamp(delta.x/attempt.distance,0,1);
+   $('spread').style.setProperty('--pull',attempt.p);$('spread').style.setProperty('--drag-distance',attempt.distance+'px');
+   target.classList.add('dragging');target.classList.toggle('pull-ready',attempt.p>=.75);$('spread').classList.add('dragging-mechanism');
+   togetherScene?.movement(attempt.p);
+  };
+  attempt.pointer=trackPointer(target,e,{
+   move,
+   end:event=>{
+    if(drag!==attempt)return;move(event);
+    const complete=attempt.p>=.75;
+    cancelGesture();
+    if(complete&&story.gate?.id===attempt.gate)prepareCurrent('together','cue-drag');
+   },
+   cancel:event=>{touchDiagnostics?.record('gesture-cancelled',{target:target.id,reason:event.type});if(drag===attempt)cancelGesture();}
+  },{capture:false,consume:event=>attempt.travel>8||travel(event)>8});
+ },{passive:true});
+ target.addEventListener('dragstart',e=>e.preventDefault());
+}
 function bindDrag(target,direction){
- const expectedAction=target.classList.contains('person')||target.id==='together-cue'?'together':'pull';
- const tapControl=target.id==='together-cue';let suppressPointerClick=false;
+ const expectedAction=target.classList.contains('person')?'together':'pull';
  const move=e=>{
   if(!drag||drag.id!==e.pointerId||drag.target!==target)return;
   const delta=bookDelta(drag.axes,e.clientX-drag.x,e.clientY-drag.y);
@@ -107,13 +170,14 @@ function bindDrag(target,direction){
   if(story.scene.id==='together')togetherScene?.movement(drag.p);
   target.classList.toggle('pull-ready',drag.p>=.75);
  };
- const activate=()=>{cancelGesture();return prepareCurrent(expectedAction);};
+ const activate=()=>{cancelGesture();return prepareCurrent(expectedAction,'keyboard');};
  target.addEventListener('pointerdown',e=>{
   const g=story.gate;
-  if(drag||!e.isPrimary||e.button!==0||!g||g.action!==expectedAction||!story.available()||[...pauses].some(r=>r!=='gate')||story.prepared.has(g.id))return;
-  e.preventDefault();e.stopPropagation();suppressPointerClick=false;
+  const blocked=drag?'active-gesture':!e.isPrimary||e.button!==0?'non-primary-pointer':!g?'no-gate':g.action!==expectedAction?'different-gate-action':!story.available()?'before-availability-window':[...pauses].some(r=>r!=='gate')?'paused':story.prepared.has(g.id)?'already-prepared':null;
+  if(blocked){touchDiagnostics?.record('gesture-rejected',{target:target.id,reason:blocked});return;}
+  e.preventDefault();e.stopPropagation();
   const distance=clamp($('book').clientHeight*.13,36,80);
-  const attempt={id:e.pointerId,gate:g.id,target,direction,x:e.clientX,y:e.clientY,p:0,travel:0,distance,axes:bookAxes($('book')),suppressClick:()=>{suppressPointerClick=true;}};drag=attempt;
+  const attempt={id:e.pointerId,gate:g.id,target,direction,x:e.clientX,y:e.clientY,p:0,travel:0,distance,axes:bookAxes($('book'))};drag=attempt;
   if(story.scene.id==='together')togetherScene?.beginAttempt();
   if(story.scene.id!=='love')$('spread').style.setProperty('--drag-distance',distance+'px');
   target.classList.add('dragging');$('spread').classList.add('dragging-mechanism');
@@ -121,20 +185,18 @@ function bindDrag(target,direction){
    move,
    end:event=>{
     if(drag!==attempt)return;move(event);
-    const complete=attempt.p>=.75||(tapControl&&attempt.travel<=8);
-    suppressPointerClick=true;cancelGesture();
-    if(complete&&story.gate?.id===attempt.gate)prepareCurrent(expectedAction);
+    const complete=attempt.p>=.75;
+    touchDiagnostics?.record('gesture-ended',{target:target.id,progress:attempt.p,complete});
+    cancelGesture();
+    if(complete&&story.gate?.id===attempt.gate)prepareCurrent(expectedAction,'drag');
    },
-   cancel:()=>{if(drag===attempt){suppressPointerClick=true;cancelGesture();}}
+   cancel:event=>{touchDiagnostics?.record('gesture-cancelled',{target:target.id,reason:event.type});if(drag===attempt)cancelGesture();}
   });
  },{passive:false});
  target.addEventListener('dragstart',e=>e.preventDefault());
- target.addEventListener('click',e=>{
-  if(tapControl){e.preventDefault();e.stopPropagation();if(e.detail>0&&suppressPointerClick)return;activate();}
-  else if(e.detail===0)activate();
- });
+ target.addEventListener('click',e=>{if(e.detail===0)activate();});
 }
-function cancelGesture(){pageEdge.cancel();if(drag){const d=drag;drag=null;d.suppressClick?.();d.pointer?.stop();d.target.classList.remove('dragging','pull-ready');$('spread').classList.remove('dragging-mechanism');$('spread').style.setProperty('--pull',0);}clearTimeout(holdTimer);if(holdPointer!==null){holdPointer=null;setPause('hold',false);}}
+function cancelGesture(){pageEdge.cancel();if(drag){const d=drag;drag=null;d.pointer?.stop();d.target.classList.remove('dragging','pull-ready');$('spread').classList.remove('dragging-mechanism');$('spread').style.setProperty('--pull',0);}clearTimeout(holdTimer);if(holdPointer!==null){holdPointer=null;setPause('hold',false);}}
 function pageFlipReady(){const g=story.gate;return phase==='story'&&g?.action==='flip'&&story.available()&&!story.prepared.has(g.id)&&!paperTurn.active&&!drag;}
 function step(t){
  if(phase!=='story')return;const result=story.tick(t);
@@ -236,4 +298,9 @@ music.addEventListener('pause',()=>{if(!['welcome','opening'].includes(phase)&&!
 music.addEventListener('ended',()=>{if(['ending','letter'].includes(phase)){music.currentTime=0;lastPlaybackPosition=0;if(!pauses.size)play();}});
 addEventListener('keydown',e=>{if(e.key==='Escape'){if(drag||pageEdge.gesture)cancelGesture();if(!$('reading').hidden)$('close-reading')?.click();}});
 orientation();preload();requestAnimationFrame(frame);
-Object.defineProperty(window,'melanina',{value:{get state(){return {...story.snapshot(),phase,pauses:[...pauses],ready,openedAt,openingProgress:bookOpening.active?bookOpening.active.elapsed/(bookOpening.active.reduced?.45:2.05):null,audioTime:music.currentTime,playing:!music.paused,ending:pusheenEnding?.state??null,audioLevel:songLevel.state};},get letter(){return letter;}}});
+Object.defineProperty(window,'melanina',{value:{version:inputBuild,get state(){return {...story.snapshot(),phase,pauses:[...pauses],ready,openedAt,openingProgress:bookOpening.active?bookOpening.active.elapsed/(bookOpening.active.reduced?.45:2.05):null,audioTime:music.currentTime,playing:!music.paused,ending:pusheenEnding?.state??null,audioLevel:songLevel.state};},get letter(){return letter;},get touchReport(){return touchDiagnostics?.report()??null;}}});
+if(new URLSearchParams(location.search).get('diagnostics')==='touch'){
+ import('./touch-diagnostics.js?v=touch-20261017-2').then(({createTouchDiagnostics})=>{
+  touchDiagnostics=createTouchDiagnostics({build:inputBuild,readState:()=>({...story.snapshot(),phase,gate:story.gate?{...story.gate}:null,available:story.available(),pauses:[...pauses],drag:drag?{id:drag.id,target:drag.target.id,gate:drag.gate,progress:drag.p,travel:drag.travel,distance:drag.distance}:null,audio:{time:music.currentTime,paused:music.paused,seeking:music.seeking,readyState:music.readyState,context:songLevel.state.context},pageTurn:!!paperTurn.active})});
+ }).catch(error=>console.error('Touch diagnostics could not load',error));
+}
